@@ -12,7 +12,6 @@ function init() {
 }
 
 function handleClick(event) {
-  console.log("Click event:", event);
   clicks++;
   document.title = `Clicks: ${clicks}`;
   if(event){
@@ -35,6 +34,16 @@ function handleClick(event) {
   if (clicks === 4) {
     createSnake();
   }
+  if (clicks === 5) {
+    const wisper = document.getElementById("wisper");
+    wisper.play();
+  }
+  if (clicks === 6) {
+    showMoon();
+  }
+  if (clicks === 7) {
+    stars();
+  }
   if (clicks >= 9999998 && flag) {
     flag = false; // Prevent multiple executions
     rain();
@@ -46,9 +55,9 @@ function handleClick(event) {
     scary1.play();
     createSnake();
     playBGM();
+    showMoon();
   }
 }
-
 function createRipple(event) {
   const ripple = document.createElement("div");
   ripple.className = "ripple";
@@ -287,6 +296,14 @@ function listenForKeys() {
     karan: showImage, // Show the image when "karan" is typed
     play: playBGM, // Play all sounds when "play" is typed
     death: setDeathClicks, // Set click count to 9999999 when "death" is typed
+    invert: invertClicker, // Invert the clicker when "invert" is typed
+    color1: () => changeClickerColor("#333333"),
+    color2: () => changeClickerColor("#999999"),
+    color3: () => changeClickerColor("#eeeedd"),
+    color4: () => changeClickerColor("#555555"),
+    color5: () => changeClickerColor("#443355"),
+    blur: applyBlurEffect, // Apply blur effect to the clicker
+    grayscale: applyGrayscaleEffect, // Apply grayscale effect to the clicker
   };
 
   let inputBuffer = ""; // Buffer to store user input
@@ -327,7 +344,94 @@ function playBGM() {
 }
 
 function setDeathClicks() {
-  console.log("Setting clicks to 9999999");
   clicks = 9999998; // Set the click count to 9999999
   handleClick(); // Recheck all conditions
+}
+
+function invertClicker() {
+  const clicker = document.getElementById("clicker");
+  if (clicker.style.filter === "invert(1)") {
+    clicker.style.filter = "none"; // Remove the invert effect
+  } else {
+    clicker.style.filter = "invert(1)"; // Apply the invert effect
+  }
+}
+
+function applyGrayscaleEffect() {
+  if (clicker.style.filter === "grayscale(1)") {
+    clicker.style.filter = "none"; // Remove the grayscale effect
+  } else {
+    clicker.style.filter = "grayscale(1)"; // Apply the grayscale effect
+  }
+}
+
+function applyBlurEffect() {
+  const clicker = document.getElementById("clicker");
+  if (clicker.style.filter === "blur(5px)") {
+    clicker.style.filter = "none"; // Remove the blur effect
+    console.log("Blur effect removed from clicker");
+  } else {
+    clicker.style.filter = "blur(5px)"; // Apply the blur effect
+  }
+}
+
+function changeClickerColor(color) {
+  const clicker = document.getElementById("clicker");
+  clicker.style.backgroundColor = color; // Change the background color
+}
+
+
+function showMoon() {
+  const moon = document.querySelector(".moon");
+  moon.classList.remove("hide"); // Show the moon
+}
+
+
+function stars(){
+  // Author: Ali Soueidan
+// Author URI: https//: www.alisoueidan.com
+
+//////
+// Positioning stars
+
+// Select star-divs
+const STARS = document.querySelectorAll(".star");
+// Set counter  
+  let i = 0;
+// Select every star and reposition it by coincidence
+  STARS.forEach( function() {
+    // defining x coordinate
+      let x = Math.floor((Math.random() * 100) + 1);
+    // defining y coordinate
+      let y = Math.floor((Math.random() * 90) + 1);
+    // Setting star position x & Y
+      STARS[i].style.left = x + "%";
+      STARS[i].style.top = y + "%";
+    // Counting up the counter
+      ++i;
+  });
+
+
+//////
+// lets do some bling bling (super easy, super simple)
+
+// Setup interval timing
+  let intervalTimer = 1000;
+// setting upfunction for blinking stars
+  function blink(){
+    // Setup of a random selektor
+      let startID = Math.floor((Math.random() * 100) + 1);
+    // Selekting random star
+      let selection = document.querySelector("#star-"+ startID);
+    // Adding blink-classs to selektion
+      selection.classList.add("blink");
+    setTimeout(function(){ 
+      // Removing Blink-class after timeout
+        selection.classList.remove("blink");
+    }, intervalTimer/2);
+  };
+
+// Let the magic beginn
+  setInterval( blink, intervalTimer/160 );
+
 }

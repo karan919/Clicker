@@ -148,3 +148,50 @@ body{
     pointer-events: none;
     z-index: 10; /* Higher z-index to place it above the snake-container */
   }
+
+  .moon::after {
+    content: "";
+    font-size: 100px;
+    position: absolute;
+    top: 5vh;
+    right: 10vh;
+    z-index: 1000;
+    animation: moonPhaze 30s infinite;
+  }
+
+  @keyframes moonPhaze {
+    0%,
+    100%  { content: '🌑'; }
+    12.5% { content: '🌒'; }
+    25.0% { content: '🌓'; }
+    37.5% { content: '🌔'; }
+    50.0% { content: '🌕'; }
+    62.5% { content: '🌖'; }
+    75.0% { content: '🌗'; }
+    87.5% { content: '🌘'; }
+  }
+
+  .star {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1px;
+    height: 1px;
+    background-color: #eaeaea;
+    transition: 1s ease;
+    will-change: transform;
+    pointer-events: none;
+    user-select: none;
+  }
+  .star.blink {
+    transform: translate(-50%, -50%) scale(2);
+    filter: drop-shadow(0 0 3px white);
+  } 
+
+  .yt-video{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    pointer-events: none;
+    user-select: none;
+  }
