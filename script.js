@@ -1,72 +1,52 @@
-window.onload = function () {
-  const clicker = document.getElementById("clicker");
-  const candle = document.querySelector(".g-candle");
-  const scary1 = document.getElementById("scary1"); 
-  let clicks = 0;
+let clicks = 0;
+let flag = true;
+const clicker = document.getElementById("clicker");
+const candle = document.querySelector(".g-candle");
+const scary1 = document.getElementById("scary1");
+window.onload = init;
 
-  clicker.addEventListener("click", function (event) {
-    clicks++;
-    document.title = `Clicks: ${clicks}`;
+function init() {
+  // Call the function to start listening for the sequence
+  listenForKeys();
+  clicker.addEventListener("click", handleClick);
+}
+
+function handleClick(event) {
+  console.log("Click event:", event);
+  clicks++;
+  document.title = `Clicks: ${clicks}`;
+  if(event){
     createRipple(event);
+  }
 
-    if (clicks === 100) {
-      dvd();
-    }else if(clicks === 2){
-      candle.classList.remove("hide");
-    }else if(clicks % 75 === 0){
-      scary1.play();
-    }else if(clicks === 10){
-      rain();
-    }
+  // Check all conditions independently
+  if (clicks === 1) {
+    dvd();
+  }
+  if (clicks === 2) {
+    candle.classList.remove("hide");
+  }
+  if (clicks % 75 === 0) {
+    scary1.play();
+  }
+  if (clicks === 3) {
+    rain();
+  }
+  if (clicks === 4) {
     createSnake();
-  });
-};
-
-function dvd() {
-  let x = 0,
-    y = 0,
-    dirX = 1,
-    dirY = 1;
-  const speed = 2;
-  const pallete = ["#ff8800", "#e124ff", "#6a19ff", "#ff2188"];
-  let dvd = document.getElementById("dvd");
-  dvd.style.backgroundColor = pallete[0];
-  let prevColorChoiceIndex = 0;
-  const dvdWidth = dvd.clientWidth;
-  const dvdHeight = dvd.clientHeight;
-
-  function getNewRandomColor() {
-    const currentPallete = [...pallete];
-    currentPallete.splice(prevColorChoiceIndex, 1);
-    const colorChoiceIndex = Math.floor(Math.random() * currentPallete.length);
-    prevColorChoiceIndex =
-      colorChoiceIndex < prevColorChoiceIndex
-        ? colorChoiceIndex
-        : colorChoiceIndex + 1;
-    const colorChoice = currentPallete[colorChoiceIndex];
-    return colorChoice;
   }
-  function animate() {
-    const screenHeight = document.body.clientHeight;
-    const screenWidth = document.body.clientWidth;
+  if (clicks >= 9999998 && flag) {
+    flag = false; // Prevent multiple executions
+    rain();
+    setTimeout(() => {
 
-    if (y + dvdHeight >= screenHeight || y < 0) {
-      dirY *= -1;
-      dvd.style.backgroundColor = getNewRandomColor();
-    }
-    if (x + dvdWidth >= screenWidth || x < 0) {
-      dirX *= -1;
-
-      dvd.style.backgroundColor = getNewRandomColor();
-    }
-    x += dirX * speed;
-    y += dirY * speed;
-    dvd.style.left = x + "px";
-    dvd.style.top = y + "px";
-    window.requestAnimationFrame(animate);
+      dvd();
+    }, 1000); // Delay for 1 second
+    candle.classList.remove("hide");
+    scary1.play();
+    createSnake();
+    playBGM();
   }
-
-  window.requestAnimationFrame(animate);
 }
 
 function createRipple(event) {
@@ -137,14 +117,21 @@ function createSnake() {
     if (newHead.y >= clickerHeight) newHead.y = 0;
 
     // Check if the snake eats the food
-    if (newHead.x === parseInt(food.style.left) && newHead.y === parseInt(food.style.top)) {
+    const foodX = parseInt(food.style.left);
+    const foodY = parseInt(food.style.top);
+    if (newHead.x === foodX && newHead.y === foodY) {
       // Add a new segment to the snake
       const newSegment = document.createElement("div");
       newSegment.className = "snake-segment";
       snakeContainer.appendChild(newSegment);
       snakeSegments.push(newSegment);
-      positions.push({}); // Add a placeholder for the new segment
-      placeFoodRandomly(food); // Place the food in a new random position
+
+      // Add the correct position for the new segment
+      const lastSegment = positions[positions.length - 1];
+      positions.push({ x: lastSegment.x, y: lastSegment.y });
+
+      // Place the food in a new random position
+      placeFoodRandomly(food);
     } else {
       // Remove the last position to maintain the snake's length
       positions.pop();
@@ -165,6 +152,9 @@ function createSnake() {
 
   // Function to change the snake's direction
   function changeDirection(event) {
+    // Prevent default behavior (e.g., scrolling)
+    event.preventDefault();
+
     switch (event.key) {
       case "ArrowUp":
         if (direction.y === 0) direction = { x: 0, y: -1 };
@@ -185,8 +175,10 @@ function createSnake() {
   function placeFoodRandomly(food) {
     const maxX = Math.floor(clickerWidth / segmentSize) * segmentSize;
     const maxY = Math.floor(clickerHeight / segmentSize) * segmentSize;
-    const randomX = Math.floor(Math.random() * (maxX / segmentSize)) * segmentSize;
-    const randomY = Math.floor(Math.random() * (maxY / segmentSize)) * segmentSize;
+    const randomX =
+      Math.floor(Math.random() * (maxX / segmentSize)) * segmentSize;
+    const randomY =
+      Math.floor(Math.random() * (maxY / segmentSize)) * segmentSize;
     food.style.left = `${randomX}px`;
     food.style.top = `${randomY}px`;
   }
@@ -198,8 +190,54 @@ function createSnake() {
   moveSnake();
 }
 
+function dvd() {
+  let x = 0,
+    y = 0,
+    dirX = 1,
+    dirY = 1;
+  const speed = 2;
+  const pallete = ["#ff8800", "#e124ff", "#6a19ff", "#ff2188"];
+  let dvd = document.getElementById("dvd");
+  dvd.style.backgroundColor = pallete[0];
+  let prevColorChoiceIndex = 0;
+  const dvdWidth = dvd.clientWidth;
+  const dvdHeight = dvd.clientHeight;
+
+  function getNewRandomColor() {
+    const currentPallete = [...pallete];
+    currentPallete.splice(prevColorChoiceIndex, 1);
+    const colorChoiceIndex = Math.floor(Math.random() * currentPallete.length);
+    prevColorChoiceIndex =
+      colorChoiceIndex < prevColorChoiceIndex
+        ? colorChoiceIndex
+        : colorChoiceIndex + 1;
+    const colorChoice = currentPallete[colorChoiceIndex];
+    return colorChoice;
+  }
+  function animate() {
+    const screenHeight = document.body.clientHeight;
+    const screenWidth = document.body.clientWidth;
+
+    if (y + dvdHeight >= screenHeight || y < 0) {
+      dirY *= -1;
+      dvd.style.backgroundColor = getNewRandomColor();
+    }
+    if (x + dvdWidth >= screenWidth || x < 0) {
+      dirX *= -1;
+
+      dvd.style.backgroundColor = getNewRandomColor();
+    }
+    x += dirX * speed;
+    y += dirY * speed;
+    dvd.style.left = x + "px";
+    dvd.style.top = y + "px";
+    window.requestAnimationFrame(animate);
+  }
+
+  window.requestAnimationFrame(animate);
+}
+
 function rain() {
-  const clicker = document.getElementById("clicker");
   const rainContainer = document.createElement("div");
   rainContainer.className = "rain";
   clicker.appendChild(rainContainer);
@@ -242,4 +280,54 @@ function rain() {
 
   // Make it rain
   createRain();
+}
+
+function listenForKeys() {
+  const commands = {
+    karan: showImage, // Show the image when "karan" is typed
+    play: playBGM, // Play all sounds when "play" is typed
+    death: setDeathClicks, // Set click count to 9999999 when "death" is typed
+  };
+
+  let inputBuffer = ""; // Buffer to store user input
+
+  document.addEventListener("keydown", (event) => {
+    inputBuffer += event.key.toLowerCase(); // Append the pressed key to the buffer
+
+    // Keep the buffer length equal to the longest command
+    const maxCommandLength = Math.max(
+      ...Object.keys(commands).map((cmd) => cmd.length)
+    );
+    if (inputBuffer.length > maxCommandLength) {
+      inputBuffer = inputBuffer.slice(1);
+    }
+
+    // Check if the buffer matches any command
+    for (const command in commands) {
+      if (inputBuffer.endsWith(command)) {
+        commands[command](); // Execute the corresponding function
+        inputBuffer = ""; // Clear the buffer after executing the command
+        break;
+      }
+    }
+  });
+}
+
+function showImage() {
+  const img = document.querySelector(".developer-box");
+  img.classList.remove("hide"); // Show the image
+  setTimeout(() => {
+    img.classList.add("hide");
+  }, 3000);
+}
+
+function playBGM() {
+  const sound = document.querySelector("#bgm");
+  sound.play();
+}
+
+function setDeathClicks() {
+  console.log("Setting clicks to 9999999");
+  clicks = 9999998; // Set the click count to 9999999
+  handleClick(); // Recheck all conditions
 }

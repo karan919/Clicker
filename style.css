@@ -40,6 +40,7 @@ body{
     background-repeat: no-repeat;
     background-size: 75px;
     background-position: center;
+    z-index: 10; /* Higher z-index to place it above the snake-container */
   }
 
   .ripple {
@@ -68,7 +69,8 @@ body{
     width: 100vw;
     height: 100vh;
     overflow: hidden;
-    background-color: #111;
+    background-color: transparent; /* Ensure transparency */
+    z-index: 1; /* Lower z-index to place it below other elements */
   }
   
   .snake-segment {
@@ -78,6 +80,9 @@ body{
     background-color: green;
     border: 2px solid darkgreen;
     border-radius: 4px;
+    pointer-events: none; /* Prevent interaction with the snake */
+    user-select: none; /* Prevent text selection on the snake */
+    z-index: 10
   }
 
   .food {
@@ -86,6 +91,9 @@ body{
     height: 20px;
     background-color: red;
     border-radius: 50%;
+    pointer-events: none; /* Prevent interaction with the snake */
+    user-select: none; /* Prevent text selection on the snake */
+    z-index: 10
   }
 
   .drop {
@@ -109,4 +117,34 @@ body{
       transform: translateY(110vh);
       opacity: 0;
     }
+  }
+
+  .developer{
+    display: flex;
+    height: 100vh;
+    position: absolute;
+    user-select: none;
+  }
+
+  .developer-text{
+    position: absolute;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    font-size: 30px;
+    gap: 10px;
+    text-align:center;
+    font-family:'Oswald', tahoma; 
+    justify-content: center;
+    color: black;
+    mix-blend-mode: overlay;
+    z-index: 500;
+  }
+
+  .rain {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10; /* Higher z-index to place it above the snake-container */
   }
