@@ -195,3 +195,42 @@ body{
     pointer-events: none;
     user-select: none;
   }
+  .chest {
+    position: absolute;
+    cursor: pointer;
+    outline: none; /* Remove the focus outline (caret) */
+  }
+  .chest img{
+    width: 70px;
+    height: 70px;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .bouncy-ball {
+    position: absolute;
+    background-color: #ff5722; /* Ball color */
+    border-radius: 50%; /* Make it circular */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Add a shadow */
+    cursor: pointer; /* Change cursor to pointer */
+    z-index: 1000; /* Ensure it's above other elements */
+    transition: transform 0.2s ease; /* Add a slight bounce effect on click */
+  }
+  
+  .bouncy-ball:active {
+    transform: scale(1.2); /* Slightly enlarge the ball when clicked */
+  }
+
+  .ghost {
+    position: absolute;
+    cursor: pointer;
+    outline: none; /* Remove the focus outline (caret) */
+    pointer-events: auto; /* Allow interaction */
+    user-select: none; /* Prevent text selection */
+  }
+  
+  .ghost img {
+    height: 40px;
+    pointer-events: none; /* Prevent interaction with the image itself */
+    user-select: none; /* Prevent text selection on the image */
+  }

@@ -3,7 +3,16 @@ let flag = true;
 const clicker = document.getElementById("clicker");
 const candle = document.querySelector(".g-candle");
 const scary1 = document.getElementById("scary1");
-window.onload = init;
+window.onload = () => {
+  init();
+};
+
+let chestTimeout; // Timeout for despawning the chest
+let chestRespawnTimeout; // Timeout for respawning the chest
+let ball; // Reference to the ball element
+let ballSpeed = 2; // Initial speed of the ball
+let ballInterval; // Interval for ball movement
+let isBallFaster = false; // Flag to track if the ball is moving faster
 
 function init() {
   // Call the function to start listening for the sequence
@@ -19,30 +28,39 @@ function handleClick(event) {
   }
 
   // Check all conditions independently
-  if (clicks === 1) {
+  if (clicks === 50) {
     dvd();
   }
-  if (clicks === 2) {
+  if (clicks === 100) {
     candle.classList.remove("hide");
   }
   if (clicks % 75 === 0) {
     scary1.play();
   }
-  if (clicks === 3) {
+  if (clicks === 150) {
     rain();
   }
-  if (clicks === 4) {
+  if (clicks === 250) {
     createSnake();
   }
-  if (clicks === 5) {
+  if (clicks % 87 === 0) {
     const wisper = document.getElementById("wisper");
-    wisper.play();
+    // wisper.play();?
   }
-  if (clicks === 6) {
+  if (clicks === 400) {
     showMoon();
   }
-  if (clicks === 7) {
+  if (clicks === 500) {
     stars();
+  }
+  if (clicks === 800) {
+    spawnChest(); // Spawn the chest after 500 clicks
+  }
+  if (clicks === 1000) {
+    spawnBouncyBall(); // Spawn the bouncy ball after 101 clicks
+  }
+  if(clicks === 1500){
+    spawnGhosts(); // Spawn ghosts after 150 clicks
   }
   if (clicks >= 9999998 && flag) {
     flag = false; // Prevent multiple executions
@@ -134,6 +152,8 @@ function createSnake() {
       newSegment.className = "snake-segment";
       snakeContainer.appendChild(newSegment);
       snakeSegments.push(newSegment);
+      clicks += 10; // Add 10 clicks for eating food
+      document.title = `Clicks: ${clicks}`; // Update the document title
 
       // Add the correct position for the new segment
       const lastSegment = positions[positions.length - 1];
@@ -434,4 +454,164 @@ const STARS = document.querySelectorAll(".star");
 // Let the magic beginn
   setInterval( blink, intervalTimer/160 );
 
+}
+
+function spawnChest() {
+  // Check if the chest already exists
+  let chest = document.querySelector(".chest");
+  if (!chest) {
+    chest = document.createElement("div");
+    chest.className = "chest";
+    chest.innerHTML = '<img src="./images/chest.png" alt="Chest" />';
+    document.body.appendChild(chest);
+  }
+
+  // Randomly position the chest
+  const chestSize = 50; // Adjust chest size if needed
+  const maxX = window.innerWidth - chestSize;
+  const maxY = window.innerHeight - chestSize;
+  const randomX = Math.floor(Math.random() * maxX);
+  const randomY = Math.floor(Math.random() * maxY);
+
+  chest.style.position = "absolute";
+  chest.style.left = `${randomX}px`;
+  chest.style.top = `${randomY}px`;
+  chest.style.width = `${chestSize}px`;
+  chest.style.height = `${chestSize}px`;
+  chest.style.cursor = "pointer";
+  chest.style.zIndex = "1000";
+  chest.style.display = "block";
+
+  // Add click event to the chest
+  chest.onclick = () => {
+    clicks += 100; // Add 100 clicks
+    document.title = `Clicks: ${clicks}`; // Update the document title
+    chest.style.display = "none"; // Hide the chest
+    clearTimeout(chestTimeout); // Clear the despawn timeout
+    respawnChest(); // Schedule the next chest spawn
+  };
+
+  // Despawn the chest after 2 seconds if not clicked
+  chestTimeout = setTimeout(() => {
+    chest.style.display = "none"; // Hide the chest
+    respawnChest(); // Schedule the next chest spawn
+  }, 2000);
+}
+
+function respawnChest() {
+  // Respawn the chest after 3 minutes (180,000 milliseconds)
+  chestRespawnTimeout = setTimeout(() => {
+    spawnChest();
+  }, 180000);
+}
+
+function spawnBouncyBall() {
+  // Check if the ball already exists
+  if (!ball) {
+    ball = document.createElement("div");
+    ball.className = "bouncy-ball";
+    document.body.appendChild(ball);
+  }
+
+  // Randomly position the ball
+  const ballSize = 50; // Size of the ball
+  const maxX = window.innerWidth - ballSize;
+  const maxY = window.innerHeight - ballSize;
+  let ballX = Math.floor(Math.random() * maxX);
+  let ballY = Math.floor(Math.random() * maxY);
+  let dirX = 1; // Horizontal direction (1 = right, -1 = left)
+  let dirY = 1; // Vertical direction (1 = down, -1 = up)
+
+  ball.style.left = `${ballX}px`;
+  ball.style.top = `${ballY}px`;
+  ball.style.width = `${ballSize}px`;
+  ball.style.height = `${ballSize}px`;
+
+  // Function to move the ball
+  function moveBall() {
+    ballX += dirX * ballSpeed;
+    ballY += dirY * ballSpeed;
+
+    // Bounce off the walls
+    if (ballX <= 0 || ballX >= maxX) dirX *= -1;
+    if (ballY <= 0 || ballY >= maxY) dirY *= -1;
+
+    ball.style.left = `${ballX}px`;
+    ball.style.top = `${ballY}px`;I
+  }
+
+  // Start moving the ball
+  ballInterval = setInterval(moveBall, 16); // ~60 FPS
+
+  // Add click event to the ball
+  ball.onclick = () => {
+    ballSpeed += 2; // Increase the speed
+    dirX = Math.random() > 0.5 ? 1 : -1; // Randomize horizontal direction
+    dirY = Math.random() > 0.5 ? 1 : -1; // Randomize vertical direction
+  };
+}
+
+function spawnGhosts() {
+  const ghostImages = document.querySelectorAll(".ghost"); // Select all ghost elements
+  const ghostSize = 50; // Size of the ghost
+  const maxX = window.innerWidth - ghostSize;
+  const maxY = window.innerHeight - ghostSize;
+
+  ghostImages.forEach((ghost) => {
+    // Randomly position the ghost
+    let ghostX = Math.floor(Math.random() * maxX);
+    let ghostY = Math.floor(Math.random() * maxY);
+    let dirX = Math.random() > 0.5 ? 1 : -1; // Random horizontal direction
+    let dirY = Math.random() > 0.5 ? 1 : -1; // Random vertical direction
+
+    ghost.style.position = "absolute";
+    ghost.style.left = `${ghostX}px`;
+    ghost.style.top = `${ghostY}px`;
+    ghost.style.width = `${ghostSize}px`;
+    ghost.style.height = `${ghostSize}px`;
+    ghost.style.display = "block";
+    ghost.style.cursor = "pointer";
+    ghost.style.zIndex = "1000";
+
+    // Function to move the ghost
+    function moveGhost() {
+      ghostX += dirX * 1; // Speed of the ghost
+      ghostY += dirY * 1;
+
+      // Bounce off the walls
+      if (ghostX <= 0 || ghostX >= maxX) dirX *= -1;
+      if (ghostY <= 0 || ghostY >= maxY) dirY *= -1;
+
+      ghost.style.left = `${ghostX}px`;
+      ghost.style.top = `${ghostY}px`;
+    }
+
+    // Start moving the ghost
+    const ghostInterval = setInterval(moveGhost, 16); // ~60 FPS
+
+    // Add click event to the ghost
+    ghost.onclick = () => {
+      clicks += 50; // Add 50 clicks
+      document.title = `Clicks: ${clicks}`; // Update the document title
+      ghost.style.display = "none"; // Hide the ghost
+      clearInterval(ghostInterval); // Stop the ghost's movement
+      respawnGhost(ghost); // Respawn the ghost after some time
+    };
+
+    // Despawn the ghost after 10 seconds if not clicked
+    setTimeout(() => {
+      ghost.style.display = "none"; // Hide the ghost
+      clearInterval(ghostInterval); // Stop the ghost's movement
+      respawnGhost(ghost); // Respawn the ghost after some time
+    }, 10000);
+  });
+}
+
+function respawnGhost(ghost) {
+  // Respawn the ghost after a random time between 5 and 15 seconds
+  const respawnTime = Math.random() * 100000 + 5000; // 5-15 seconds
+  setTimeout(() => {
+    ghost.style.display = "block"; // Show the ghost again
+    spawnGhosts(); // Restart the ghost movement
+  }, respawnTime);
 }
