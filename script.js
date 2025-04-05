@@ -62,6 +62,10 @@ function handleClick(event) {
   if(clicks === 1500){
     spawnGhosts(); // Spawn ghosts after 150 clicks
   }
+  if (clicks === 700) {
+    const img = document.querySelector(".yt-video");
+    img.classList.remove("hide"); // Show the image
+  }
   if (clicks >= 9999998 && flag) {
     flag = false; // Prevent multiple executions
     rain();
