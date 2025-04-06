@@ -234,3 +234,54 @@ body{
     pointer-events: none; /* Prevent interaction with the image itself */
     user-select: none; /* Prevent text selection on the image */
   }
+
+  .water {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    background: rgba(0, 0, 255, 0.5); /* Semi-transparent blue water */
+    transition: height 0.5s ease; /* Smooth water rising */
+    z-index: 777; /* Ensure it's above other elements */
+  }
+
+  .bucket {
+    position: absolute;
+    cursor: pointer;
+    display: none; /* Initially hidden */
+    z-index: 888; /* Ensure it's above the water */
+    width: 20px; /* Set bucket width */
+    height: 20px; /* Set bucket height */
+    user-select: none; /* Prevent text selection on the image */
+    transition: transform 0.2s ease, opacity 0.5s ease; /* Smooth scaling and fading */
+  }
+  
+  .bucket img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ensure the image fits nicely */
+  }
+  
+  .bucket:active {
+    transform: scale(1.2); /* Slightly enlarge the bucket when clicked */
+    opacity: 0.8; /* Slightly reduce opacity on click */
+  }
+
+  .cloud-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Prevent interaction with the clouds */
+    z-index: 10; /* Base z-index for the container */
+  }
+  
+  .cloud {
+    position: absolute;
+    width: 150px; /* Adjust cloud size */
+    height: auto; /* Maintain aspect ratio */
+    pointer-events: none; /* Prevent interaction with the clouds */
+    transition: left 10s linear; /* Smooth movement along the X-axis */
+  }

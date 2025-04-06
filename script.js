@@ -1,19 +1,21 @@
-let clicks = 0;
-let flag = true;
 const clicker = document.getElementById("clicker");
 const candle = document.querySelector(".g-candle");
 const scary1 = document.getElementById("scary1");
-window.onload = () => {
-  init();
-};
-
+let clicks = 0;
+let flag = true;
 let chestTimeout; // Timeout for despawning the chest
 let chestRespawnTimeout; // Timeout for respawning the chest
 let ball; // Reference to the ball element
 let ballSpeed = 2; // Initial speed of the ball
 let ballInterval; // Interval for ball movement
 let isBallFaster = false; // Flag to track if the ball is moving faster
+let waterLevel = 0; // Tracks the current water level (percentage)
+let waterInterval; // Interval for water rising
+let glassTimeout; // Timeout for despawning the glass
 
+window.onload = () => {
+  init();
+};
 function init() {
   // Call the function to start listening for the sequence
   listenForKeys();
@@ -34,7 +36,7 @@ function handleClick(event) {
   if (clicks === 100) {
     candle.classList.remove("hide");
   }
-  if (clicks % 75 === 0) {
+  if (clicks === 75) {
     scary1.play();
   }
   if (clicks === 150) {
@@ -43,9 +45,9 @@ function handleClick(event) {
   if (clicks === 250) {
     createSnake();
   }
-  if (clicks % 87 === 0) {
+  if (clicks === 666) {
     const wisper = document.getElementById("wisper");
-    // wisper.play();?
+    wisper.play();
   }
   if (clicks === 400) {
     showMoon();
@@ -53,18 +55,24 @@ function handleClick(event) {
   if (clicks === 500) {
     stars();
   }
+  if (clicks === 700) {
+    const img = document.querySelector(".yt-video");
+    img.classList.remove("hide"); // Show the image
+  }
   if (clicks === 800) {
     spawnChest(); // Spawn the chest after 500 clicks
   }
   if (clicks === 1000) {
     spawnBouncyBall(); // Spawn the bouncy ball after 101 clicks
   }
-  if(clicks === 1500){
+  if(clicks === 1200){
     spawnGhosts(); // Spawn ghosts after 150 clicks
   }
-  if (clicks === 700) {
-    const img = document.querySelector(".yt-video");
-    img.classList.remove("hide"); // Show the image
+  if (clicks === 2000) {
+    startWaterEffect(); // Start the water effect 1200 clicks
+  }
+  if (clicks === 1) {
+    spawnClouds(); // Spawn clouds after 3000 clicks
   }
   if (clicks >= 9999998 && flag) {
     flag = false; // Prevent multiple executions
@@ -85,7 +93,7 @@ function createRipple(event) {
   ripple.className = "ripple";
   document.body.appendChild(ripple);
 
-  const size = 20; // Size of the ripple
+  const size = 10; // Size of the ripple
   const x = event.pageX - size / 2;
   const y = event.pageY - size / 2;
 
@@ -412,12 +420,8 @@ function showMoon() {
 
 
 function stars(){
-  // Author: Ali Soueidan
-// Author URI: https//: www.alisoueidan.com
-
-//////
-// Positioning stars
-
+const starContainer = document.createElement("stars");
+starContainer.classList.remove("hide"); // Show the stars
 // Select star-divs
 const STARS = document.querySelectorAll(".star");
 // Set counter  
@@ -618,4 +622,116 @@ function respawnGhost(ghost) {
     ghost.style.display = "block"; // Show the ghost again
     spawnGhosts(); // Restart the ghost movement
   }, respawnTime);
+}
+
+// Start the water effect and spawn buckets
+function startWaterEffect() {
+  let water = document.querySelector(".water");
+  if (!water) {
+    water = document.createElement("div");
+    water.className = "water";
+    document.body.appendChild(water);
+  }
+
+  waterInterval = setInterval(() => {
+    waterLevel += 1; // Increase water level by 1%
+    water.style.height = `${waterLevel}%`;
+
+    if (waterLevel >= 100) {
+      clearInterval(waterInterval);
+      clicks = 0; // Reset clicks
+      document.title = `Clicks: ${clicks}`;
+      alert("The water has filled the screen! Clicks have been reset.");
+      waterLevel = 0;
+      water.style.height = "0%";
+    }
+  }, 2000);
+
+  // Start spawning buckets
+  setTimeout(spawnBucket, 5000); // Spawn the first bucket after 20 seconds
+}
+
+function spawnBucket() {
+  // Create the bucket element if it doesn't exist
+  let bucket = document.querySelector(".bucket");
+
+  // Randomly position the bucket
+  const bucketSize = 40; // Size of the bucket
+  const maxX = window.innerWidth - bucketSize;
+  const maxY = window.innerHeight - bucketSize;
+  const randomX = Math.floor(Math.random() * maxX);
+  const randomY = Math.floor(Math.random() * maxY);
+
+  bucket.style.left = `${randomX}px`;
+  bucket.style.top = `${randomY}px`;
+  bucket.style.width = `${bucketSize}px`;
+  bucket.style.height = `${bucketSize}px`;
+  bucket.style.display = "block";
+
+  // Add click event to the bucket
+  bucket.onclick = () => {
+    waterLevel = Math.max(0, waterLevel - 10); // Lower water level by 10%
+    document.querySelector(".water").style.height = `${waterLevel}%`;
+    bucket.style.display = "none"; // Hide the bucket
+    clearTimeout(bucketTimeout); // Clear the despawn timeout
+  };
+
+  // Despawn the bucket after 1.5 seconds if not clicked
+  bucketTimeout = setTimeout(() => {
+    bucket.style.display = "none"; // Hide the bucket
+  }, 1500);
+
+  // Schedule the next bucket spawn after 20 seconds
+  setTimeout(spawnBucket, 5000);
+}
+
+function spawnClouds() {
+  const cloudContainer = document.querySelector(".cloud-container") || document.createElement("div");
+  if (!cloudContainer.classList.contains("cloud-container")) {
+    cloudContainer.className = "cloud-container";
+    document.body.appendChild(cloudContainer);
+  }
+
+  function createCloud() {
+    const cloud = document.createElement("img");
+    const randomCloudNumber = Math.floor(Math.random() * 5) + 1; // Randomly select cloud1 to cloud5
+    cloud.src = `./images/cloud${randomCloudNumber}.png`;
+    cloud.className = "cloud";
+
+    // Randomize initial position and z-index
+    const startX = Math.random() > 0.5 ? -150 : window.innerWidth + 150; // Start offscreen (left or right)
+    const randomY = Math.floor(Math.random() * (window.innerHeight * 0.8)); // Random vertical position (top 80% of the screen)
+    const randomZIndex = Math.floor(Math.random() * 11) + 10; // Z-index between 10 and 20
+
+    cloud.style.left = `${startX}px`;
+    cloud.style.top = `${randomY}px`;
+    cloud.style.zIndex = randomZIndex;
+
+    cloudContainer.appendChild(cloud);
+
+    // Stop click event propagation on the cloud
+    cloud.addEventListener("click", (event) => {
+      event.stopPropagation(); // Prevent the click from propagating to the parent
+    });
+
+    // Animate the cloud along the X-axis
+    const endX = startX < 0 ? window.innerWidth + 150 : -150; // Move to the opposite side
+    const duration = Math.random() * 5000 + 5000; // Random duration between 5s and 10s
+
+    cloud.style.transition = `left ${duration}ms linear`;
+    setTimeout(() => {
+      cloud.style.left = `${endX}px`;
+    }, 100); // Delay to ensure the transition applies
+
+    // Remove the cloud after it moves offscreen
+    setTimeout(() => {
+      cloud.remove();
+    }, duration + 100);
+
+    // Spawn the next cloud after a random delay
+    setTimeout(createCloud, Math.random() * 2000 + 1000); // Delay between 1s and 3s
+  }
+
+  // Start spawning clouds
+  createCloud();
 }
