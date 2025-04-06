@@ -56,8 +56,7 @@ function handleClick(event) {
     stars();
   }
   if (clicks === 700) {
-    const img = document.querySelector(".yt-video");
-    img.classList.remove("hide"); // Show the image
+    showYT();
   }
   if (clicks === 800) {
     spawnChest(); // Spawn the chest after 500 clicks
@@ -65,14 +64,20 @@ function handleClick(event) {
   if (clicks === 1000) {
     spawnBouncyBall(); // Spawn the bouncy ball after 101 clicks
   }
-  if(clicks === 1200){
+  if(clicks === 1500){
     spawnGhosts(); // Spawn ghosts after 150 clicks
   }
   if (clicks === 2000) {
     startWaterEffect(); // Start the water effect 1200 clicks
   }
-  if (clicks === 1) {
+  if (clicks === 2500) {
     spawnClouds(); // Spawn clouds after 3000 clicks
+  }
+  if (clicks === 3500) {
+    showGta(); // Show the GTA image after 3500 clicks
+  }
+  if (clicks === 4500) {
+    showVideoButtons(); // Show the video buttons
   }
   if (clicks >= 9999998 && flag) {
     flag = false; // Prevent multiple executions
@@ -86,6 +91,15 @@ function handleClick(event) {
     createSnake();
     playBGM();
     showMoon();
+    showGta();
+    spawnBouncyBall();
+    spawnClouds();
+    startWaterEffect();
+    showYT();
+    spawnGhosts();
+    spawnChest();
+    stars();
+    showVideoButtons();
   }
 }
 function createRipple(event) {
@@ -93,7 +107,7 @@ function createRipple(event) {
   ripple.className = "ripple";
   document.body.appendChild(ripple);
 
-  const size = 10; // Size of the ripple
+  const size = 20; // Size of the ripple
   const x = event.pageX - size / 2;
   const y = event.pageY - size / 2;
 
@@ -545,7 +559,7 @@ function spawnBouncyBall() {
     if (ballY <= 0 || ballY >= maxY) dirY *= -1;
 
     ball.style.left = `${ballX}px`;
-    ball.style.top = `${ballY}px`;I
+    ball.style.top = `${ballY}px`;
   }
 
   // Start moving the ball
@@ -565,7 +579,10 @@ function spawnGhosts() {
   const maxX = window.innerWidth - ghostSize;
   const maxY = window.innerHeight - ghostSize;
 
-  ghostImages.forEach((ghost) => {
+  ghostImages.forEach((ghost, index) => {
+    // Ensure each ghost is spawned only once
+    if (ghost.style.display === "block") return;
+
     // Randomly position the ghost
     let ghostX = Math.floor(Math.random() * maxX);
     let ghostY = Math.floor(Math.random() * maxY);
@@ -617,7 +634,7 @@ function spawnGhosts() {
 
 function respawnGhost(ghost) {
   // Respawn the ghost after a random time between 5 and 15 seconds
-  const respawnTime = Math.random() * 100000 + 5000; // 5-15 seconds
+  const respawnTime = Math.random() * 10000 + 5000; // 5-15 seconds
   setTimeout(() => {
     ghost.style.display = "block"; // Show the ghost again
     spawnGhosts(); // Restart the ghost movement
@@ -709,11 +726,6 @@ function spawnClouds() {
 
     cloudContainer.appendChild(cloud);
 
-    // Stop click event propagation on the cloud
-    cloud.addEventListener("click", (event) => {
-      event.stopPropagation(); // Prevent the click from propagating to the parent
-    });
-
     // Animate the cloud along the X-axis
     const endX = startX < 0 ? window.innerWidth + 150 : -150; // Move to the opposite side
     const duration = Math.random() * 5000 + 5000; // Random duration between 5s and 10s
@@ -734,4 +746,50 @@ function spawnClouds() {
 
   // Start spawning clouds
   createCloud();
+}
+
+function showGta(){
+  const gta = document.querySelector(".gta");
+  gta.classList.remove("hide");
+}
+
+function showYT(){
+  const yt = document.querySelector(".yt-video");
+    yt.classList.remove("hide");
+}
+
+function showVideoButtons() {
+  const videoChoice = document.querySelector(".video-choice");
+  videoChoice.style.display = "flex"; // Show the buttons
+
+  // Add event listeners to the buttons
+  document.getElementById("video1").onclick = () => playVideo(0); // Play "rolled" video
+  document.getElementById("video2").onclick = () => playVideo(1); // Play "scare" video
+}
+
+function playVideo(videoIndex) {
+  const videoBox = document.querySelector(".video-box");
+  const videos = videoBox.querySelectorAll("video");
+
+  // Hide the buttons
+  const videoChoice = document.querySelector(".video-choice");
+  videoChoice.style.display = "none";
+
+  // Show the selected video
+  const selectedVideo = videos[videoIndex];
+  selectedVideo.style.display = "block"; // Ensure the video is visible
+  selectedVideo.style.position = "fixed";
+  selectedVideo.style.top = "0";
+  selectedVideo.style.left = "0";
+  selectedVideo.style.width = "100vw";
+  selectedVideo.style.height = "100vh";
+  selectedVideo.style.zIndex = "1000";
+  selectedVideo.play();
+
+  // Hide the video after it ends
+  selectedVideo.onended = () => {
+    selectedVideo.style.display = "none"; // Hide the video
+    selectedVideo.pause();
+    selectedVideo.currentTime = 0; // Reset the video
+  };
 }
