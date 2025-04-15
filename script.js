@@ -1,6 +1,7 @@
 const clicker = document.getElementById("clicker");
 const candle = document.querySelector(".g-candle");
 const scary1 = document.getElementById("scary1");
+const clickCounter = document.getElementById("click-counter");
 let clicks = 0;
 let flag = true;
 let chestTimeout; // Timeout for despawning the chest
@@ -12,6 +13,10 @@ let isBallFaster = false; // Flag to track if the ball is moving faster
 let waterLevel = 0; // Tracks the current water level (percentage)
 let waterInterval; // Interval for water rising
 let glassTimeout; // Timeout for despawning the glass
+let planeInterval, bombInterval;
+let tankPosition = window.innerWidth / 2; // Initial tank position
+const tankSpeed = 20; // Speed of tank movement
+const projectileSpeed = 10; // Speed of projectile movement
 
 window.onload = () => {
   init();
@@ -24,7 +29,11 @@ function init() {
 
 function handleClick(event) {
   clicks++;
-  document.title = `Clicks: ${clicks}`;
+
+  if (clickCounter) {
+    clickCounter.textContent = `Clicks: ${clicks}`;
+  }
+  
   if(event){
     createRipple(event);
   }
@@ -73,11 +82,15 @@ function handleClick(event) {
   if (clicks === 2500) {
     spawnClouds(); // Spawn clouds after 3000 clicks
   }
-  if (clicks === 3500) {
+  if (clicks === 3000) {
     showGta(); // Show the GTA image after 3500 clicks
   }
-  if (clicks === 4500) {
+  if (clicks === 3500) {
     showVideoButtons(); // Show the video buttons
+  }
+  if (clicks === 4500) {
+    createTank();
+    startPlaneFeature();
   }
   if (clicks >= 9999998 && flag) {
     flag = false; // Prevent multiple executions
@@ -179,7 +192,7 @@ function createSnake() {
       snakeContainer.appendChild(newSegment);
       snakeSegments.push(newSegment);
       clicks += 10; // Add 10 clicks for eating food
-      document.title = `Clicks: ${clicks}`; // Update the document title
+      clickCounter.textContent = `Clicks: ${clicks}`;
 
       // Add the correct position for the new segment
       const lastSegment = positions[positions.length - 1];
@@ -507,7 +520,7 @@ function spawnChest() {
   // Add click event to the chest
   chest.onclick = () => {
     clicks += 100; // Add 100 clicks
-    document.title = `Clicks: ${clicks}`; // Update the document title
+    clickCounter.textContent = `Clicks: ${clicks}`;
     chest.style.display = "none"; // Hide the chest
     clearTimeout(chestTimeout); // Clear the despawn timeout
     respawnChest(); // Schedule the next chest spawn
@@ -617,7 +630,7 @@ function spawnGhosts() {
     // Add click event to the ghost
     ghost.onclick = () => {
       clicks += 50; // Add 50 clicks
-      document.title = `Clicks: ${clicks}`; // Update the document title
+      clickCounter.textContent = `Clicks: ${clicks}`;
       ghost.style.display = "none"; // Hide the ghost
       clearInterval(ghostInterval); // Stop the ghost's movement
       respawnGhost(ghost); // Respawn the ghost after some time
@@ -657,7 +670,7 @@ function startWaterEffect() {
     if (waterLevel >= 100) {
       clearInterval(waterInterval);
       clicks = 0; // Reset clicks
-      document.title = `Clicks: ${clicks}`;
+      clickCounter.textContent = `Clicks: ${clicks}`;
       alert("The water has filled the screen! Clicks have been reset.");
       waterLevel = 0;
       water.style.height = "0%";
@@ -792,4 +805,123 @@ function playVideo(videoIndex) {
     selectedVideo.pause();
     selectedVideo.currentTime = 0; // Reset the video
   };
+}
+
+function startPlaneFeature() {
+  const plane = document.createElement("img");
+  plane.src = "images/plane.png"; // Replace with the path to your plane image
+  plane.className = "plane";
+  document.body.appendChild(plane);
+
+  let planeDirection = 1; // 1 for right, -1 for left
+  let planePosition = 0;
+
+  // Move the plane
+  planeInterval = setInterval(() => {
+    planePosition += 5 * planeDirection;
+    if (planePosition > window.innerWidth - 100 || planePosition < 0) {
+      planeDirection *= -1; // Reverse direction
+    }
+    plane.style.left = `${planePosition}px`;
+  }, 50);
+
+  bombInterval = setInterval(() => {
+    dropBomb(planePosition);
+  }, 8000);
+}
+
+function dropBomb(x) {
+  const bomb = document.createElement("img");
+  bomb.src = "images/bomb.png"; // Replace with the path to your bomb image
+  bomb.className = "bomb";
+  bomb.style.left = `${x}px`;
+  bomb.style.top = "30px"; // Initial position
+  document.body.appendChild(bomb);
+
+  const bombFallInterval = setInterval(() => {
+    const bombTop = parseInt(bomb.style.top || "30px");
+    if (bombTop >= window.innerHeight - 50) {
+      clearInterval(bombFallInterval);
+      bomb.remove();
+
+      // Decrease clicks by 5 if the bomb touches the bottom
+      clicks = Math.max(0, clicks - 5); // Ensure clicks don't go below 0
+      if (clickCounter) {
+        clickCounter.textContent = `Clicks: ${clicks}`;
+      }
+    } else {
+      bomb.style.top = `${bombTop + 5}px`;
+    }
+  }, 50);
+
+  // Attach the interval ID to the bomb element for later clearing
+  bomb.dataset.fallInterval = bombFallInterval;
+}
+
+function createTank() {
+  const tank = document.createElement("img");
+  tank.src = "images/tank.png"; // Replace with the path to your tank image
+  tank.id = "tank";
+  tank.style.left = `${tankPosition}px`;
+  document.body.appendChild(tank);
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "a" || event.key === "A") {
+      tankPosition = Math.max(0, tankPosition - tankSpeed);
+    } else if (event.key === "d" || event.key === "D") {
+      tankPosition = Math.min(window.innerWidth - 50, tankPosition + tankSpeed);
+    } else if (event.key === " ") {
+      shootProjectile();
+    }
+    tank.style.left = `${tankPosition}px`;
+  });
+}
+
+function shootProjectile() {
+  const projectile = document.createElement("img");
+  projectile.src = "images/rocket.png"; // Replace with the path to your rocket image
+  projectile.className = "projectile";
+  projectile.style.left = `${tankPosition + 20}px`;
+  projectile.style.top = `${window.innerHeight - 50}px`; // Initial position
+  document.body.appendChild(projectile);
+
+  const projectileInterval = setInterval(() => {
+    const projectileTop = parseInt(projectile.style.top || `${window.innerHeight - 50}px`);
+    if (projectileTop <= 0) {
+      clearInterval(projectileInterval);
+      projectile.remove();
+    } else {
+      projectile.style.top = `${projectileTop - projectileSpeed}px`;
+
+      // Check for collision with bombs
+      const bombs = document.querySelectorAll(".bomb");
+      bombs.forEach((bomb) => {
+        const bombRect = bomb.getBoundingClientRect();
+        const projectileRect = projectile.getBoundingClientRect();
+        if (
+          projectileRect.left < bombRect.right &&
+          projectileRect.right > bombRect.left &&
+          projectileRect.top < bombRect.bottom &&
+          projectileRect.bottom > bombRect.top
+        ) {
+          // Remove the bomb and clear its fall interval
+          const bombFallInterval = bomb.dataset.fallInterval;
+          if (bombFallInterval) {
+            clearInterval(bombFallInterval);
+          }
+          bomb.remove();
+
+          // Remove the projectile
+          projectile.remove();
+          clearInterval(projectileInterval);
+
+          // Increase clicks by 5 if the rocket hits a bomb
+          clicks += 5;
+          if (clickCounter) {
+            clickCounter.textContent = `Clicks: ${clicks}`;
+          }
+        }
+      });
+    }
+  }, 30);
 }
