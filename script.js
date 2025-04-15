@@ -92,6 +92,9 @@ function handleClick(event) {
     createTank();
     startPlaneFeature();
   }
+  if (clicks === 5000) {
+    startDinosaurGame(); // Start the dinosaur game after 10 clicks
+  }
   if (clicks >= 9999998 && flag) {
     flag = false; // Prevent multiple executions
     rain();
@@ -113,6 +116,9 @@ function handleClick(event) {
     spawnChest();
     stars();
     showVideoButtons();
+    startDinosaurGame();
+    createTank();
+    startPlaneFeature();
   }
 }
 function createRipple(event) {
@@ -870,7 +876,7 @@ function createTank() {
       tankPosition = Math.max(0, tankPosition - tankSpeed);
     } else if (event.key === "d" || event.key === "D") {
       tankPosition = Math.min(window.innerWidth - 50, tankPosition + tankSpeed);
-    } else if (event.key === " ") {
+    } else if (event.key === "w" || event.key === "W") {
       shootProjectile();
     }
     tank.style.left = `${tankPosition}px`;
@@ -924,4 +930,93 @@ function shootProjectile() {
       });
     }
   }, 30);
+}
+
+function startDinosaurGame() {
+  // Create game container
+  const gameContainer = document.createElement("div");
+  gameContainer.id = "dino-game";
+  document.body.appendChild(gameContainer);
+
+  // Create bicycle
+  const bicycle = document.createElement("img");
+  bicycle.src = "images/bicycle.png"; // Replace with the path to your bicycle image
+  bicycle.id = "bicycle";
+  gameContainer.appendChild(bicycle);
+
+  let isJumping = false;
+
+  // Handle jump
+  document.addEventListener("keydown", (event) => {
+    if (event.key === " " && !isJumping) {
+      isJumping = true;
+      let jumpHeight = 0;
+      const jumpInterval = setInterval(() => {
+        if (jumpHeight >= 150) {
+          clearInterval(jumpInterval);
+          const fallInterval = setInterval(() => {
+            if (jumpHeight <= 0) {
+              clearInterval(fallInterval);
+              isJumping = false;
+            }
+            jumpHeight -= 5;
+            bicycle.style.bottom = `${jumpHeight}px`;
+          }, 20);
+        }
+        jumpHeight += 5;
+        bicycle.style.bottom = `${jumpHeight}px`;
+      }, 20);
+    }
+  });
+
+  // Function to spawn stones
+  function spawnStone() {
+    const stone = document.createElement("img");
+    stone.src = "images/stone.png"; // Replace with the path to your stone image
+    stone.className = "stone";
+    stone.style.left = "100%";
+    stone.style.bottom = "0"; // Ensure the stone starts at the bottom
+    gameContainer.appendChild(stone);
+
+    let hasCollided = false; // Track if the stone has collided with the bicycle
+
+    const stoneInterval = setInterval(() => {
+      const stoneLeft = parseInt(window.getComputedStyle(stone).left);
+      const bicycleBottom = parseInt(window.getComputedStyle(bicycle).bottom);
+      const stoneLeftAfterMove = parseInt(window.getComputedStyle(stone).left);
+
+      // Check for collision
+      if (
+        stoneLeftAfterMove > 50 && // Adjusted collision range
+        stoneLeftAfterMove < 100 &&
+        bicycleBottom < 50 // Ensure collision only happens when the bicycle is not jumping
+      ) {
+        hasCollided = true; // Mark as collided
+        clicks = Math.max(0, clicks - 50); // Decrease clicks by 50
+        if (clickCounter) {
+          clickCounter.textContent = `Clicks: ${clicks}`;
+        }
+        stone.remove(); // Remove the stone
+        clearInterval(stoneInterval); // Stop the stone's movement
+      }
+
+      // If the stone reaches the left edge and no collision occurred
+      if (stoneLeft <= 0 && !hasCollided) {
+        clicks += 50; // Add 50 clicks for successfully avoiding the stone
+        if (clickCounter) {
+          clickCounter.textContent = `Clicks: ${clicks}`;
+        }
+        stone.remove(); // Remove the stone
+        clearInterval(stoneInterval); // Stop the stone's movement
+      } else {
+        stone.style.left = `${stoneLeft - 10}px`; // Move the stone left
+      }
+    }, 50);
+
+    // Spawn the next stone after a random interval (5 to 15 seconds)
+    setTimeout(spawnStone, Math.random() * 10000 + 5000);
+  }
+
+  // Start spawning stones
+  spawnStone();
 }

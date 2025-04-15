@@ -244,7 +244,7 @@ body{
     height: 0;
     background: rgba(0, 0, 255, 0.5); /* Semi-transparent blue water */
     transition: height 0.5s ease; /* Smooth water rising */
-    z-index: 777; /* Ensure it's above other elements */
+    z-index: 2000; /* Ensure it's above other elements */
   }
 
   .bucket {
@@ -410,3 +410,34 @@ body{
     pointer-events: none;
     user-select: none
   }
+  
+  #bicycle {
+    position: absolute;
+    bottom: 0;
+    left: 50px;
+    width: 80px; /* Adjusted size for the bicycle */
+    height: auto;
+    z-index: 1000;
+    pointer-events: none; /* Prevent interaction */
+    user-select: none; /* Prevent text selection */
+  }
+  
+  @keyframes run {
+    0% {
+      background-position: 0;
+    }
+    100% {
+      background-position: -100px;
+    }
+  }
+  
+/* Stone styling */
+.stone {
+  position: absolute;
+  bottom: 0;
+  width: 50px; /* Adjusted size for the stone */
+  height: auto;
+  z-index: 1000;
+  pointer-events: none; /* Prevent interaction */
+  user-select: none; /* Prevent text selection */
+}
