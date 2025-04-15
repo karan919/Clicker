@@ -441,3 +441,7 @@ body{
   pointer-events: none; /* Prevent interaction */
   user-select: none; /* Prevent text selection */
 }
+
+.ghost {
+  transition: opacity 0.5s ease-in-out;
+}
