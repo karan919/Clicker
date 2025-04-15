@@ -18,6 +18,7 @@ let tankPosition = window.innerWidth / 2; // Initial tank position
 const tankSpeed = 20; // Speed of tank movement
 const projectileSpeed = 10; // Speed of projectile movement
 const triggeredEvents = new Set(); // Track triggered events
+let ballSpawned = false; // Flag to track if the ball has already been spawned
 
 window.onload = () => {
   init();
@@ -49,13 +50,13 @@ function checkEvents() {
     triggeredEvents.add(50);
     dvd();
   }
-  if (clicks >= 100 && !triggeredEvents.has(100)) {
-    triggeredEvents.add(100);
-    candle.classList.remove("hide");
-  }
   if (clicks >= 75 && !triggeredEvents.has(75)) {
     triggeredEvents.add(75);
     scary1.play();
+  }
+  if (clicks >= 100 && !triggeredEvents.has(100)) {
+    triggeredEvents.add(100);
+    candle.classList.remove("hide");
   }
   if (clicks >= 150 && !triggeredEvents.has(150)) {
     triggeredEvents.add(150);
@@ -65,11 +66,6 @@ function checkEvents() {
     triggeredEvents.add(250);
     createSnake();
   }
-  if (clicks >= 666 && !triggeredEvents.has(666)) {
-    triggeredEvents.add(666);
-    const wisper = document.getElementById("wisper");
-    wisper.play();
-  }
   if (clicks >= 400 && !triggeredEvents.has(400)) {
     triggeredEvents.add(400);
     showMoon();
@@ -77,6 +73,11 @@ function checkEvents() {
   if (clicks >= 500 && !triggeredEvents.has(500)) {
     triggeredEvents.add(500);
     stars();
+  }
+  if (clicks >= 666 && !triggeredEvents.has(666)) {
+    triggeredEvents.add(666);
+    const wisper = document.getElementById("wisper");
+    wisper.play();
   }
   if (clicks >= 700 && !triggeredEvents.has(700)) {
     triggeredEvents.add(700);
@@ -109,6 +110,10 @@ function checkEvents() {
   if (clicks >= 3000 && !triggeredEvents.has(3000)) {
     triggeredEvents.add(3000);
     showGta();
+  }
+  if (clicks >= 3400 && !triggeredEvents.has(3400)) {
+    triggeredEvents.add(3400);
+    showDeathMessage();
   }
   if (clicks >= 3500 && !triggeredEvents.has(3500)) {
     triggeredEvents.add(3500);
@@ -396,9 +401,10 @@ function rain() {
 
 function listenForKeys() {
   const commands = {
+    death: playDeathVideo, // Play the full-screen video when "death" is typed
     karan: showImage, // Show the image when "karan" is typed
     play: playBGM, // Play all sounds when "play" is typed
-    death: setDeathClicks, // Set click count to 9999999 when "death" is typed
+    infinite: setDeathClicks, // Set click count to 9999998 when "infinite" is typed
     invert: invertClicker, // Invert the clicker when "invert" is typed
     color1: () => changeClickerColor("#333333"),
     color2: () => changeClickerColor("#999999"),
@@ -447,8 +453,8 @@ function playBGM() {
 }
 
 function setDeathClicks() {
-  clicks = 9999998; // Set the click count to 9999999
-  handleClick(); // Recheck all conditions
+  clicks = 9999998; // Set the click count to 9999998
+  checkEvents(); // Recheck all conditions
 }
 
 function invertClicker() {
@@ -580,6 +586,9 @@ function respawnChest() {
 }
 
 function spawnBouncyBall() {
+  if (ballSpawned) return; // Prevent duplicate calls
+  ballSpawned = true;
+
   // Check if the ball already exists
   if (!ball) {
     ball = document.createElement("div");
@@ -1026,4 +1035,60 @@ function startDinosaurGame() {
 
   // Start spawning stones
   spawnStone();
+}
+
+function showDeathMessage() {
+  const message = document.createElement("div");
+  message.id = "death-message";
+  message.textContent = "Type: death";
+  message.style.position = "fixed";
+  message.style.top = "50%";
+  message.style.left = "50%";
+  message.style.transform = "translate(-50%, -50%)";
+  message.style.fontSize = "3rem";
+  message.style.color = "red";
+  message.style.zIndex = "1000";
+  message.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+  message.style.padding = "20px";
+  message.style.borderRadius = "10px";
+  message.style.textAlign = "center";
+  document.body.appendChild(message);
+
+  // Remove the message after 3 seconds
+  setTimeout(() => {
+    message.remove();
+  }, 3000);
+}
+
+function playDeathVideo() {
+  const video = document.createElement("video");
+  video.src = "./videos/Malenia.mp4"; // Path to the video file
+  video.style.position = "fixed";
+  video.style.top = "0";
+  video.style.left = "0";
+  video.style.width = "100vw";
+  video.style.height = "100vh";
+  video.style.zIndex = "1000";
+  video.autoplay = true;
+  video.controls = false;
+  video.loop = false;
+  document.body.appendChild(video);
+  clicker.style.pointerEvents = "none";
+
+  // Disable clicks and actions after the video ends
+  video.onended = () => {
+    video.remove();
+    endGame();
+  };
+}
+
+function endGame() {
+  const centerText = document.querySelector(".centerText");
+  centerText.textContent = "Game Over";
+
+  // Set clicks to 0 and prevent further clicks
+  clicks = -9999999; // Set to a negative value to indicate game over
+  clickCounter.textContent = `Clicks: ${clicks}`;
+  // Disable click events
+  clicker.style.pointerEvents = "none";
 }

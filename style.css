@@ -1,436 +1,454 @@
 @import url(https://fonts.googleapis.com/css?family=Oswald);
 
-body{
-    margin: 0;
-    box-sizing: border-box;
-    overflow: hidden;
+body {
+  margin: 0;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
-#clicker{
-    width: 100vw;
-    height: 100vh;
-    background-color: #111;
-    color: white;
+#clicker {
+  width: 100vw;
+  height: 100vh;
+  background-color: #111;
+  color: white;
 }
 
-.centerText{
-    position: absolute;
-    transform:translate(-50%,-50%);
-    left:50%; top:50%;
-    text-align:center;
-    font-family:'Oswald', tahoma; 
-    font-size: 5vw;
-    white-space: nowrap;
-    color:#ef9e17; 
-    font-family:'Oswald', tahoma; 
-    mix-blend-mode: color-dodge;
-    z-index: 999;
-    pointer-events: none;
-    user-select: none;
-  }
+.centerText {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  top: 50%;
+  text-align: center;
+  font-family: "Oswald", tahoma;
+  font-size: 5vw;
+  white-space: nowrap;
+  color: #ef9e17;
+  font-family: "Oswald", tahoma;
+  mix-blend-mode: color-dodge;
+  z-index: 999;
+  pointer-events: none;
+  user-select: none;
+}
 
 #dvd {
-    position: absolute;
-    left: 0px;
-    top: 0px;
-    height: 50px;
-    width: 100px;
-    mask: url("https://upload.wikimedia.org/wikipedia/commons/9/9b/DVD_logo.svg");
-    -webkit-mask: url("https://upload.wikimedia.org/wikipedia/commons/9/9b/DVD_logo.svg");
-    background-repeat: no-repeat;
-    background-size: 75px;
-    background-position: center;
-    z-index: 10; /* Higher z-index to place it above the snake-container */
-  }
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  height: 50px;
+  width: 100px;
+  mask: url("https://upload.wikimedia.org/wikipedia/commons/9/9b/DVD_logo.svg");
+  -webkit-mask: url("https://upload.wikimedia.org/wikipedia/commons/9/9b/DVD_logo.svg");
+  background-repeat: no-repeat;
+  background-size: 75px;
+  background-position: center;
+  z-index: 10; /* Higher z-index to place it above the snake-container */
+}
 
-  .ripple {
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.5);
-    transform: scale(0);
-    animation: ripple-animation 0.6s ease-out;
-    pointer-events: none; /* Prevent interaction with the ripple */
-    z-index: 1000;
-  }
-  
-  @keyframes ripple-animation {
-    to {
-      transform: scale(4);
-      opacity: 0;
-    }
-  }
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transform: scale(0);
+  animation: ripple-animation 0.6s ease-out;
+  pointer-events: none; /* Prevent interaction with the ripple */
+  z-index: 1000;
+}
 
-  .hide{
-    display: none;
+@keyframes ripple-animation {
+  to {
+    transform: scale(4);
+    opacity: 0;
   }
+}
 
-  #snake-container {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    background-color: transparent; /* Ensure transparency */
-    z-index: 1; /* Lower z-index to place it below other elements */
-  }
-  
-  .snake-segment {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background-color: green;
-    border: 2px solid darkgreen;
-    border-radius: 4px;
-    pointer-events: none; /* Prevent interaction with the snake */
-    user-select: none; /* Prevent text selection on the snake */
-    z-index: 10
-  }
+.hide {
+  display: none;
+}
 
-  .food {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background-color: red;
-    border-radius: 50%;
-    pointer-events: none; /* Prevent interaction with the snake */
-    user-select: none; /* Prevent text selection on the snake */
-    z-index: 10
-  }
+#snake-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: transparent; /* Ensure transparency */
+  z-index: 1; /* Lower z-index to place it below other elements */
+}
 
-  .drop {
-    background:-webkit-gradient(linear,0% 0%,2% 100%, from(rgba(13,52,58,1) ), to(rgba(255,255,255,0.6))  );
-    background: -moz-linear-gradient(top, rgba(13,52,58,1) 0%, rgba(255,255,255,.6) 100%);
-      width:1px;
-      height:89px;
-      position: absolute;
-      bottom:200px;
-      -webkit-animation: fall .63s linear infinite;
-    -moz-animation: fall .63s linear infinite;
-    
-  }
-  
-  @keyframes fall {
-    0% {
-      transform: translateY(0);
-      opacity: 1;
-    }
-    100% {
-      transform: translateY(110vh);
-      opacity: 0;
-    }
-  }
+.snake-segment {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: green;
+  border: 2px solid darkgreen;
+  border-radius: 4px;
+  pointer-events: none; /* Prevent interaction with the snake */
+  user-select: none; /* Prevent text selection on the snake */
+  z-index: 10;
+}
 
-  .developer{
-    display: flex;
-    height: 100vh;
-    position: absolute;
-    user-select: none;
-  }
+.food {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: red;
+  border-radius: 50%;
+  pointer-events: none; /* Prevent interaction with the snake */
+  user-select: none; /* Prevent text selection on the snake */
+  z-index: 10;
+}
+.drop {
+  background: -moz-linear-gradient(
+    top,
+    rgba(13, 52, 58, 1) 0%,
+    rgba(255, 255, 255, 0.6) 100%
+  );
+  width: 1px;
+  height: 89px;
+  position: absolute;
+  bottom: 200px;
+  -webkit-animation: fall 0.63s linear infinite;
+  -moz-animation: fall 0.63s linear infinite;
+}
 
-  .developer-text{
-    position: absolute;
-    display: flex;
-    align-items: center;
-    align-content: center;
-    font-size: 30px;
-    gap: 10px;
-    text-align:center;
-    font-family:'Oswald', tahoma; 
-    justify-content: center;
-    color: black;
-    mix-blend-mode: overlay;
-    z-index: 500;
+@keyframes fall {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
   }
+  100% {
+    transform: translateY(110vh);
+    opacity: 0;
+  }
+}
 
-  .rain {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    user-select: none;
-    z-index: 10; /* Higher z-index to place it above the snake-container */
-  }
+.developer {
+  display: flex;
+  height: 100vh;
+  position: absolute;
+  user-select: none;
+}
 
-  .moon::after {
-    content: "";
-    font-size: 100px;
-    position: absolute;
-    top: 5vh;
-    right: 10vh;
-    z-index: 1000;
-    animation: moonPhaze 30s infinite;
-  }
+.developer-text {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  align-content: center;
+  font-size: 30px;
+  gap: 10px;
+  text-align: center;
+  font-family: "Oswald", tahoma;
+  justify-content: center;
+  color: black;
+  mix-blend-mode: overlay;
+  z-index: 500;
+}
 
-  @keyframes moonPhaze {
-    0%,
-    100%  { content: '🌑'; }
-    12.5% { content: '🌒'; }
-    25.0% { content: '🌓'; }
-    37.5% { content: '🌔'; }
-    50.0% { content: '🌕'; }
-    62.5% { content: '🌖'; }
-    75.0% { content: '🌗'; }
-    87.5% { content: '🌘'; }
-  }
+.rain {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  user-select: none;
+  z-index: 10; /* Higher z-index to place it above the snake-container */
+}
 
-  .star {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 1px;
-    height: 1px;
-    background-color: #eaeaea;
-    transition: 1s ease;
-    will-change: transform;
-    pointer-events: none;
-    user-select: none;
-  }
-  .star.blink {
-    transform: translate(-50%, -50%) scale(2);
-    filter: drop-shadow(0 0 3px white);
-  } 
+.moon::after {
+  content: "";
+  font-size: 100px;
+  position: absolute;
+  top: 5vh;
+  right: 10vh;
+  z-index: 1000;
+  animation: moonPhaze 30s infinite;
+}
 
-  .yt-video{
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    pointer-events: none;
-    user-select: none;
+@keyframes moonPhaze {
+  0%,
+  100% {
+    content: "🌑";
   }
-  .chest {
-    position: absolute;
-    cursor: pointer;
-    outline: none; /* Remove the focus outline (caret) */
+  12.5% {
+    content: "🌒";
   }
-  .chest img{
-    width: 70px;
-    height: 70px;
-    pointer-events: none;
-    user-select: none;
+  25.0% {
+    content: "🌓";
   }
+  37.5% {
+    content: "🌔";
+  }
+  50.0% {
+    content: "🌕";
+  }
+  62.5% {
+    content: "🌖";
+  }
+  75.0% {
+    content: "🌗";
+  }
+  87.5% {
+    content: "🌘";
+  }
+}
 
-  .bouncy-ball {
-    position: absolute;
-    background-color: #ff5722; /* Ball color */
-    border-radius: 50%; /* Make it circular */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Add a shadow */
-    cursor: pointer; /* Change cursor to pointer */
-    z-index: 1000; /* Ensure it's above other elements */
-    transition: transform 0.2s ease; /* Add a slight bounce effect on click */
-  }
-  
-  .bouncy-ball:active {
-    transform: scale(1.2); /* Slightly enlarge the ball when clicked */
-  }
+.star {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1px;
+  height: 1px;
+  background-color: #eaeaea;
+  transition: 1s ease;
+  will-change: transform;
+  pointer-events: none;
+  user-select: none;
+}
+.star.blink {
+  transform: translate(-50%, -50%) scale(2);
+  filter: drop-shadow(0 0 3px white);
+}
 
-  .ghost {
-    position: absolute;
-    cursor: pointer;
-    outline: none; /* Remove the focus outline (caret) */
-    pointer-events: auto; /* Allow interaction */
-    user-select: none; /* Prevent text selection */
-  }
-  
-  .ghost img {
-    height: 40px;
-    pointer-events: none; /* Prevent interaction with the image itself */
-    user-select: none; /* Prevent text selection on the image */
-  }
+.yt-video {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  pointer-events: none;
+  user-select: none;
+}
+.chest {
+  position: absolute;
+  cursor: pointer;
+  outline: none; /* Remove the focus outline (caret) */
+}
+.chest img {
+  width: 70px;
+  height: 70px;
+  pointer-events: none;
+  user-select: none;
+}
 
-  .water {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 0;
-    background: rgba(0, 0, 255, 0.5); /* Semi-transparent blue water */
-    transition: height 0.5s ease; /* Smooth water rising */
-    z-index: 2000; /* Ensure it's above other elements */
-  }
+.bouncy-ball {
+  position: absolute;
+  background-color: #ff5722; /* Ball color */
+  border-radius: 50%; /* Make it circular */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Add a shadow */
+  cursor: pointer; /* Change cursor to pointer */
+  z-index: 1000; /* Ensure it's above other elements */
+  transition: transform 0.2s ease; /* Add a slight bounce effect on click */
+}
 
-  .bucket {
-    position: absolute;
-    cursor: pointer;
-    display: none; /* Initially hidden */
-    z-index: 888; /* Ensure it's above the water */
-    width: 20px; /* Set bucket width */
-    height: 20px; /* Set bucket height */
-    user-select: none; /* Prevent text selection on the image */
-    transition: transform 0.2s ease, opacity 0.5s ease; /* Smooth scaling and fading */
-  }
-  
-  .bucket img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain; /* Ensure the image fits nicely */
-  }
-  
-  .bucket:active {
-    transform: scale(1.2); /* Slightly enlarge the bucket when clicked */
-    opacity: 0.8; /* Slightly reduce opacity on click */
-  }
+.bouncy-ball:active {
+  transform: scale(1.2); /* Slightly enlarge the ball when clicked */
+}
 
-  .cloud-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none; /* Prevent interaction with the clouds */
-    z-index: 10; /* Base z-index for the container */
-  }
-  
-  .cloud {
-    position: absolute;
-    width: 150px; /* Adjust cloud size */
-    height: auto; /* Maintain aspect ratio */
-    pointer-events: none; /* Prevent interaction with the clouds */
-    transition: left 10s linear; /* Smooth movement along the X-axis */
-  }
+.ghost {
+  position: absolute;
+  cursor: pointer;
+  outline: none; /* Remove the focus outline (caret) */
+  pointer-events: auto; /* Allow interaction */
+  user-select: none; /* Prevent text selection */
+}
 
-  .gta{
-    position: absolute;
-    left: 20px;
-    bottom: 20px;
-    pointer-events: none; /* Prevent interaction with the image itself */
-    user-select: none; /* Prevent text selection on the image */
-  }
+.ghost img {
+  height: 40px;
+  pointer-events: none; /* Prevent interaction with the image itself */
+  user-select: none; /* Prevent text selection on the image */
+}
 
-  .gta img{
-    min-height: 100px;
-    max-height: 200px;
-    height: 10vw;
-  }
+.water {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  background: rgba(0, 0, 255, 0.5); /* Semi-transparent blue water */
+  transition: height 0.5s ease; /* Smooth water rising */
+  z-index: 2000; /* Ensure it's above other elements */
+}
 
-  .video-choice {
-    position: absolute;
-    display: none;
-    left: 50%;
-    top: 65%;
-    transform: translate(-50%, -50%);
-    gap: 20px;
-    z-index: 1000;
-    user-select: none; /* Prevent text selection on the image */
-  }
-  
-  .video-button {
-    padding: 10px 20px;
-    width: 150px;
-    font-size: 18px;
-    font-family: Arial, sans-serif;
-    background-color: #333;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    user-select: none; /* Prevent text selection */
-    outline: none; /* Remove the focus outline (caret) */
-  }
-  
-  .video-button:focus {
-    outline: none; /* Ensure no caret appears when the button is focused */
-  }
-  
-  .video-box video {
-    pointer-events: none; /* Prevent interaction with the video */
-    user-select: none; /* Prevent text selection on the video */
-    z-index: 1000;
-    display: none; /* Initially hidden */
-    outline: none;
-  }
+.bucket {
+  position: absolute;
+  cursor: pointer;
+  display: none; /* Initially hidden */
+  z-index: 888; /* Ensure it's above the water */
+  width: 20px; /* Set bucket width */
+  height: 20px; /* Set bucket height */
+  user-select: none; /* Prevent text selection on the image */
+  transition: transform 0.2s ease, opacity 0.5s ease; /* Smooth scaling and fading */
+}
 
-  video{
-    pointer-events: none;
-    user-select: none
-  }
+.bucket img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Ensure the image fits nicely */
+}
 
-  .click-counter {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    background-color: rgba(255, 255, 255, 0.8);
-    color: #333;
-    font-size: 24px;
-    font-weight: bold;
-    padding: 10px 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    animation: fadeIn 1s ease-in-out;
-    z-index: 1;
-  }
-  
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
+.bucket:active {
+  transform: scale(1.2); /* Slightly enlarge the bucket when clicked */
+  opacity: 0.8; /* Slightly reduce opacity on click */
+}
 
-  .plane {
-    position: absolute;
-    top: 30px;
-    width: 70px;
-    height: auto;
-    z-index: 1000;
-    transition: left 0.1s linear;
-    pointer-events: none;
-    user-select: none
+.cloud-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Prevent interaction with the clouds */
+  z-index: 10; /* Base z-index for the container */
+}
+
+.cloud {
+  position: absolute;
+  width: 150px; /* Adjust cloud size */
+  height: auto; /* Maintain aspect ratio */
+  pointer-events: none; /* Prevent interaction with the clouds */
+  transition: left 10s linear; /* Smooth movement along the X-axis */
+}
+
+.gta {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  pointer-events: none; /* Prevent interaction with the image itself */
+  user-select: none; /* Prevent text selection on the image */
+}
+
+.gta img {
+  min-height: 100px;
+  max-height: 200px;
+  height: 10vw;
+}
+
+.video-choice {
+  position: absolute;
+  display: none;
+  left: 50%;
+  top: 65%;
+  transform: translate(-50%, -50%);
+  gap: 20px;
+  z-index: 1000;
+  user-select: none; /* Prevent text selection on the image */
+}
+
+.video-button {
+  padding: 10px 20px;
+  width: 150px;
+  font-size: 18px;
+  font-family: Arial, sans-serif;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  user-select: none; /* Prevent text selection */
+  outline: none; /* Remove the focus outline (caret) */
+}
+
+.video-button:focus {
+  outline: none; /* Ensure no caret appears when the button is focused */
+}
+
+.video-box video {
+  pointer-events: none; /* Prevent interaction with the video */
+  user-select: none; /* Prevent text selection on the video */
+  z-index: 1000;
+  display: none; /* Initially hidden */
+  outline: none;
+}
+
+video {
+  pointer-events: none;
+  user-select: none;
+}
+
+.click-counter {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #333;
+  font-size: 24px;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 1s ease-in-out;
+  z-index: 1;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
   }
-  
-  .bomb {
-    position: absolute;
-    top: 30px;
-    width: 50px;
-    height: auto;
-    z-index: 1000;
-    pointer-events: none;
-    user-select: none
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  #tank {
-    position: fixed;
-    bottom: 10px;
-    width: 60px; /* Adjust the size of the tank */
-    height: auto;
-    z-index: 1000;
-    pointer-events: none;
-    user-select: none
+}
+
+.plane {
+  position: absolute;
+  top: 30px;
+  width: 70px;
+  height: auto;
+  z-index: 1000;
+  transition: left 0.1s linear;
+  pointer-events: none;
+  user-select: none;
+}
+
+.bomb {
+  position: absolute;
+  top: 30px;
+  width: 50px;
+  height: auto;
+  z-index: 1000;
+  pointer-events: none;
+  user-select: none;
+}
+
+#tank {
+  position: fixed;
+  bottom: 10px;
+  width: 60px; /* Adjust the size of the tank */
+  height: auto;
+  z-index: 1000;
+  pointer-events: none;
+  user-select: none;
+}
+
+.projectile {
+  position: absolute;
+  width: 40px; /* Adjust the size of the rocket */
+  height: auto;
+  z-index: 1000;
+  transition: transform 0.2s ease; /* Add a smooth animation */
+  pointer-events: none;
+  user-select: none;
+}
+
+#bicycle {
+  position: absolute;
+  bottom: 0;
+  left: 50px;
+  width: 80px; /* Adjusted size for the bicycle */
+  height: auto;
+  z-index: 1000;
+  pointer-events: none; /* Prevent interaction */
+  user-select: none; /* Prevent text selection */
+}
+
+@keyframes run {
+  0% {
+    background-position: 0;
   }
-  
-  .projectile {
-    position: absolute;
-    width: 40px; /* Adjust the size of the rocket */
-    height: auto;
-    z-index: 1000;
-    transition: transform 0.2s ease; /* Add a smooth animation */
-    pointer-events: none;
-    user-select: none
+  100% {
+    background-position: -100px;
   }
-  
-  #bicycle {
-    position: absolute;
-    bottom: 0;
-    left: 50px;
-    width: 80px; /* Adjusted size for the bicycle */
-    height: auto;
-    z-index: 1000;
-    pointer-events: none; /* Prevent interaction */
-    user-select: none; /* Prevent text selection */
-  }
-  
-  @keyframes run {
-    0% {
-      background-position: 0;
-    }
-    100% {
-      background-position: -100px;
-    }
-  }
-  
+}
+
 /* Stone styling */
 .stone {
   position: absolute;
@@ -444,4 +462,18 @@ body{
 
 .ghost {
   transition: opacity 0.5s ease-in-out;
+}
+
+#death-message {
+  animation: fadeInOut 3s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
 }
